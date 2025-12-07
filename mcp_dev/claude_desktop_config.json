@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "football": {
+      "command": "/Users/carrell/opt/anaconda3/envs/agentic_news/bin/python",
+      "args": ["/Users/carrell/Desktop/dev/agentic_news/mcp_dev/hello_lowlevel.py"],
+      "env": { "PYTHONUNBUFFERED": "1" }
+    }
+  }
+}
