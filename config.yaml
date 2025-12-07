@@ -1,0 +1,81 @@
+sources:
+  - name: NUFC Official News
+    url: https://www.nufc.co.uk/news/
+    type: html
+    selector: article a
+    allow_domains: ["nufc.co.uk"]
+
+  - name: BBC Sport Newcastle United
+    url: https://feeds.bbci.co.uk/sport/football/teams/newcastle-united/rss.xml
+    type: rss
+
+  - name: Chronicle Live Football News
+    url: https://www.chroniclelive.co.uk/sport/football/football-news/
+    type: html
+    # Grab links in common headline containers as well as article blocks
+    selector: "article a, h2 a, h3 a, a.headline, a.teaser__link, a.card__link"
+    allow_domains: ["www.chroniclelive.co.uk"]
+
+
+keywords: ["NUFC", "Magpies", "St James'"]
+
+summarizer:
+  enabled: True
+  model: llama3.2:3b
+  endpoint: http://localhost:11434
+  max_chars: 2000
+
+# summarizer:
+#   enabled: true
+#   endpoint: "http://127.0.0.1:11434"
+#   model: "llama3.2:1b"     # ← much faster than 3b
+#   max_chars: 2000          # ← trim input (see #2)
+
+
+notify:
+  console: true
+  email:
+    enabled: false
+    smtp_host: smtp.example.com
+    smtp_port: 587
+    username: you@example.com
+    password: "app-password-here"
+    from_addr: you@example.com
+    to_addr: you@example.com
+
+state_db: news_state.sqlite
+
+request_interval_seconds: 2
+user_agent: "NUFC-News-Agent/1.0 (personal use)"
+
+sentiment:
+  enabled: true
+  # Choose ONE provider: "ollama" (LLM) or "vader" (rule-based, very fast)
+  provider: ollama
+  # Ollama settings (ignored if provider = vader)
+  model: llama3.2:3b
+  endpoint: http://localhost:11434
+  num_predict: 80          # keeps it snappy
+  keep_alive: "5m"         # avoid cold starts
+  # Scoring input: "summary" (faster) or "full_text" (slower, sometimes better)
+  input: full
+
+# # Faster sentiment option
+# sentiment:
+#   enabled: true
+#   provider: vader
+#   input: summary
+
+output_file: "llm_summary.txt"
+
+windows:
+  max_age_hours: 24
+
+overall_summary:
+  enabled: true
+  output_file: "llm_summary_overall.txt"
+  endpoint: "http://localhost:11434"
+  model: "llama3.2:3b"
+  sentiment: true     # run sentiment on the overall text
+
+
